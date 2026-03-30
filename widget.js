@@ -1,9 +1,9 @@
-
 (function () {
   const CONFIG = {
     botName: window.AivaConfig?.botName || "Aiva",
     primaryColor: window.AivaConfig?.primaryColor || "#6c47ff",
-    greeting: window.AivaConfig?.greeting || "Hi there! 👋 How can I help you today?",
+    greeting:
+      window.AivaConfig?.greeting || "Hi there! 👋 How can I help you today?",
     apiKey: window.AivaConfig?.apiKey || "demo",
     position: window.AivaConfig?.position || "right",
   };
@@ -294,26 +294,20 @@
     showTyping();
 
     try {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
+      const res = await fetch("http://localhost:8000/widget/chat", {
         method: "POST",
-        headers: { 
-  "Content-Type": "application/json",
-  "x-api-key": "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",
-  "anthropic-version": "2023-06-01",
-  "anthropic-dangerous-direct-browser-access": "true"
-},
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          max_tokens: 1000,
-          system: `You are ${CONFIG.botName}, a helpful AI assistant embedded on a website. Be concise, friendly, and helpful. Keep responses under 3 sentences when possible.`,
           messages: conversationHistory,
+          bot_name: CONFIG.botName,
         }),
       });
-
       const data = await res.json();
       hideTyping();
 
-      const reply = data.content?.[0]?.text || "Sorry, I couldn't process that. Please try again.";
+      const reply =
+        data.content?.[0]?.text ||
+        "Sorry, I couldn't process that. Please try again.";
       conversationHistory.push({ role: "assistant", content: reply });
       addMessage(reply, "bot");
     } catch (e) {
